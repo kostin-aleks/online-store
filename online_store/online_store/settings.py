@@ -12,18 +12,19 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 import os
 from pathlib import Path
+from datetime import timedelta
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv(os.path.join(BASE_DIR, '.env'))
+load_dotenv(os.path.join(BASE_DIR, 'online_store/.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-r&kjo#kn7z-bkw&mu6i70utr*&s_r0fllb1fg18!u7#=yf9(^q"
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -50,9 +51,13 @@ INSTALLED_APPS = [
     'django_filters',
     'djmoney',
     'drf_yasg',
+
+    'online_store.accounts',
+    'online_store.general',
 ]
 
 MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -99,8 +104,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_RENDERER_CLASSES': [
-        'config.utils.renderers.BaseJSONRenderer',
-        # 'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.JSONRenderer',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -111,7 +115,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 10,
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
-    'EXCEPTION_HANDLER': 'config.utils.exceptions.core_exception_handler',
+    # 'EXCEPTION_HANDLER': 'config.utils.exceptions.core_exception_handler',
     'NON_FIELD_ERRORS_KEY': 'detail',
     'COERCE_DECIMAL_TO_STRING': False
 }
@@ -123,7 +127,6 @@ SIMPLE_JWT = {
 }
 
 DEBUG_TOOLBAR_CONFIG = {
-    'SHOW_TOOLBAR_CALLBACK': 'config.utils.show_toolbar',
     'SHOW_COLLAPSED': True,
     'RESULTS_CACHE_SIZE': 30
 }
